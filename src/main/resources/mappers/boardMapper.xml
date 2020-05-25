@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mappers.board">
+
+<!-- 게시물 목록 -->
+<select id="list" resultType="com.board.domain.BoardVO">
+	SELECT BNO
+	     , TITLE
+	     , CONTENT
+	     , WRITER
+	     , REGDATE
+	     , VIEWCNT
+	FROM   BOARD_LIST
+	ORDER BY BNO
+</select>
+
+<!-- 게시물 상세 -->
+<select id="view" parameterType="int" resultType="com.board.domain.BoardVO">
+	SELECT BNO
+	     , TITLE
+	     , CONTENT
+	     , WRITER
+	     , REGDATE
+	     , VIEWCNT
+	FROM   BOARD_LIST
+	WHERE  BNO = #{bno}
+</select>
+
+<!-- 게시물 작성 -->
+<insert id="write" parameterType="com.board.domain.BoardVO">
+INSERT INTO BOARD_LIST
+            (
+                BNO
+              , TITLE
+              , CONTENT
+              , WRITER
+            )
+VALUES
+            (
+                BOARD_BNO_SEQ.NEXTVAL
+              , #{title}
+              , #{content}
+              , #{writer}
+            )
+</insert>
+
+<!-- 게시물 수정 -->
+<update id="modify" parameterType="com.board.domain.BoardVO" >
+UPDATE BOARD_LIST
+SET    TITLE = #{title}, CONTENT = #{content}, WRITER = #{writer}
+WHERE  BNO = #{bno}
+</update>
+
+<!-- 게시물 삭제 -->
+<update id="delete" parameterType="com.board.domain.BoardVO" >
+DELETE FROM BOARD_LIST
+WHERE       BNO = #{bno}
+</update>
+
+</mapper>
