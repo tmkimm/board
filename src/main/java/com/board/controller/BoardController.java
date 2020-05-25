@@ -18,7 +18,7 @@ import com.board.service.BoardService;
 public class BoardController {
 
 	@Inject
-	BoardService service;
+	BoardService service;	//Inject
 	
 	// 게시물 리스트
 	// /list로 요청이 왔을때 getList 메서드를 실행한다.
