@@ -2,12 +2,17 @@ package com.board.service;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
+import com.board.common.FileUtils;
+import com.board.common.Pagination;
 import com.board.dao.BoardDAO;
 import com.board.domain.BoardVO;
+import com.board.domain.FileUploadVO;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -15,27 +20,69 @@ public class BoardServiceImpl implements BoardService {
 	@Inject
 	private BoardDAO dao;
 	
-	public List<BoardVO> list() throws Exception {
-		// TODO Auto-generated method stub
-		return dao.list();
-	}
+	@Resource(name="fileUtils")
+	private FileUtils fileUtils;
 
-	public void write(BoardVO vo) throws Exception {
-		// TODO Auto-generated method stub
-		dao.write(vo);
+		
+	public List<BoardVO> getBoardList(Pagination pagination) throws Exception{
+		return dao.getBoardList(pagination);
 	}
 	
-	public BoardVO view(int bno) throws Exception {
-		return dao.view(bno);
+	// 게시물 총 개수 조회
+	public int getBoardListCnt() throws Exception {
+		return dao.getBoardListCnt();
 	}
 	
-	public void modify(BoardVO vo) throws Exception {
+	@Override
+	public void insertBoard(BoardVO vo, HttpServletRequest request) throws Exception {
+		dao.insertBoard(vo);
+
+		List<FileUploadVO> list = fileUtils.parseInsertFileInfo(vo, request);
+		for( int i=0, size=list.size(); i<size; i++) {
+			dao.insertFile(list.get(i));
+		}
+		
+//		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
+//		Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
+//		MultipartFile multipartFile = null;
+//		while(iterator.hasNext()) {
+//			multipartFile = multipartHttpServletRequest.getFile(iterator.next());
+//			if(multipartFile.isEmpty() == false) {
+//				System.out.println("------------- file start -------------");
+//				System.out.println("name : "+multipartFile.getName());
+//				System.out.println("filename : "+multipartFile.getOriginalFilename());
+//				System.out.println("size : "+multipartFile.getSize());
+//				System.out.println("-------------- file end --------------\n");
+//			}
+//		}
+		
+	}
+	
+	public BoardVO getBoardContent(int bno) throws Exception {
+		dao.updateViewCnt(bno);
+		return dao.getBoardContent(bno);
+	}
+	
+	public void updateBoard(BoardVO vo) throws Exception {
 		// TODO Auto-generated method stub
-		dao.modify(vo);
+		dao.updateBoard(vo);
 	}
 
-	public void delete(int bno) throws Exception {
+	public void deleteBoard(int bno) throws Exception {
 		// TODO Auto-generated method stub
-		dao.delete(bno);
+		dao.deleteBoard(bno);
 	}
+	
+	// 게시글 첨부파일 조회
+	@Override
+	public List<FileUploadVO> getFileListBno(int bno) throws Exception {
+		return dao.getFileListBno(bno);
+	}
+	
+	// 게시글 첨부파일 상세
+	@Override
+	public FileUploadVO getFileListIdx(int idx) throws Exception {
+		return dao.getFileListIdx(idx);
+	}
+	
 }
