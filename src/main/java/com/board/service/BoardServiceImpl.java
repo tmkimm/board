@@ -40,22 +40,7 @@ public class BoardServiceImpl implements BoardService {
 		List<FileUploadVO> list = fileUtils.parseInsertFileInfo(vo, request);
 		for( int i=0, size=list.size(); i<size; i++) {
 			dao.insertFile(list.get(i));
-		}
-		
-//		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
-//		Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
-//		MultipartFile multipartFile = null;
-//		while(iterator.hasNext()) {
-//			multipartFile = multipartHttpServletRequest.getFile(iterator.next());
-//			if(multipartFile.isEmpty() == false) {
-//				System.out.println("------------- file start -------------");
-//				System.out.println("name : "+multipartFile.getName());
-//				System.out.println("filename : "+multipartFile.getOriginalFilename());
-//				System.out.println("size : "+multipartFile.getSize());
-//				System.out.println("-------------- file end --------------\n");
-//			}
-//		}
-		
+		}		
 	}
 	
 	public BoardVO getBoardContent(int bno) throws Exception {
